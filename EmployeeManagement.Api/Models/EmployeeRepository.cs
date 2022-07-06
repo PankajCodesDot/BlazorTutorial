@@ -26,6 +26,7 @@ namespace EmployeeManagement.Api.Models
         public async Task<Employee> GetEmployee(int employeeId)
         {
             return await appDbContext.Employees
+                .Include(e=>e.Department) //if we have more table then we can use .ThenInclude(e=>e.Experince) Exprince is table name
                 .FirstOrDefaultAsync(e => e.EmployeeID == employeeId);
         }
 
