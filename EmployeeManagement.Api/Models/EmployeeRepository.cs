@@ -16,6 +16,8 @@ namespace EmployeeManagement.Api.Models
             this.appDbContext = appDbContext;
         }
 
+
+
         public async Task<IEnumerable<Employee>> GetEmployees()
         {
             return await appDbContext.Employees.ToListAsync();
@@ -77,6 +79,21 @@ namespace EmployeeManagement.Api.Models
             return null;
         }
 
+        public async Task<IEnumerable<Employee>> Search(string name, Gender? gender)
+        {
+            IQueryable<Employee> query = appDbContext.Employees;
+            if(!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(e => e.FirstName.Contains(name) || e.LastName.Contains(name)); //we can use startwith or endwith in place of contains
+            }
 
+            if(gender != null)
+            {
+                query = query.Where(x => x.Gender == gender);
+            }
+
+
+            return await query.ToListAsync();
+        }
     }
 }
