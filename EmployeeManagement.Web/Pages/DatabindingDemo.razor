@@ -1,0 +1,51 @@
+﻿@page "/databindingdemo"
+@inherits DatabindingDemoBase
+
+<h1>Databinding  Demo</h1>
+
+<h2>One Way data Binding</h2>
+<b>Name :</b> @Name
+
+<div>
+    <b>Name with salutation:</b> @(Gender == "Male" ? $"Mr. {Name}" : $"Miss. {Name}")
+</div>
+
+<div>
+    <b>Name :</b> <input value="@Name" />
+</div>
+
+<h3 style="color:darkmagenta">Two Way Data Binding</h3>
+
+<div>
+    <p>Simple html onchange event</p>
+    <b>Name :</b> <input value="@Name" @onchange="@(e => { Name = e.Value.ToString(); })" />
+</div>
+
+<div>
+    <p>Blazor Bind </p>
+    <b>Name :</b> <input @bind="Name" />
+</div>
+
+<div>
+    <p>Blazor Bind:event </p>
+    <b>Name :</b> <input @bind="Name" @bind:event="oninput" />
+</div>
+
+<div>
+    <b>Colour :</b> <input @bind="Colour" />
+
+    <div @bind-style="Colour" @bind-style:event="onchange">
+        <h3>The background colour of this text changes</h3>
+        <note>Change only color name Before colen :</note>
+    </div>
+</div>
+
+<div>
+    <h1 style="color:red">Two Way data binding Live Char Count </h1>
+    <div>
+        <textarea @bind="Description" @bind:event="oninput" />
+    </div>
+    <div>
+        Count : @Description.Length
+    </div>
+</div>
