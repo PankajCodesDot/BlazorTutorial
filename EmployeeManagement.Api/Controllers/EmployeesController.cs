@@ -103,20 +103,17 @@ namespace EmployeeManagement.Api.Controllers
                    "Error retrieving data from the database");
             }
          }
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult<Employee>> UpdateEmployee(int id,Employee employee)
+        [HttpPut]
+        public async Task<ActionResult<Employee>> UpdateEmployee(Employee employee)
         {
             try
             {
-                if(id !=employee.EmployeeID)
-                {
-                    return BadRequest("Employee Id IS Missmatch........!");
-                }
+               
+                var employeeToUpdate= await employeeRepository.GetEmployee(employee.EmployeeID);
 
-                var employeeToUpdate= await employeeRepository.GetEmployee(id);
                 if(employeeToUpdate==null)
                 {
-                    return NotFound($"Employee ID {id} Not Found..");
+                    return NotFound($"Employee ID {employee.EmployeeID} Not Found..");
                 }
 
                 return await employeeRepository.UpdateEmployee(employee);
