@@ -1,4 +1,5 @@
 ﻿using EmployeeManagement.Models;
+using EmployeeManagement.Web.Services;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,23 @@ namespace EmployeeManagement.Web.Pages
         {
             IsSelected = (bool)e.Value;
             await OnEmployeeSelection.InvokeAsync(IsSelected);
+        }
+
+        [Parameter]
+        public EventCallback<int> OnEmployeeDeleted { get; set; }
+
+        [Inject]
+        public IEmployeeService EmployeeService { get; set; }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
+
+        protected async Task Delete_Click()
+        {
+            await EmployeeService.DeleteEmployee(Employee.EmployeeID);
+            await OnEmployeeDeleted.InvokeAsync(Employee.EmployeeID);
+            //NavigationManager.NavigateTo("/", true);
         }
 
     }
