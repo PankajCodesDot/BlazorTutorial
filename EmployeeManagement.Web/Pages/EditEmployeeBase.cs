@@ -12,6 +12,7 @@ namespace EmployeeManagement.Web.Pages
 {
     public class EditEmployeeBase:ComponentBase
     {
+        public string PageHeaderText { get; set; }
         private Employee Employee { get; set; } = new Employee();
 
         [Inject]
@@ -34,7 +35,25 @@ namespace EmployeeManagement.Web.Pages
         public IMapper Mapper { get; set; }
         protected async override Task OnInitializedAsync()
         {
+
+            int.TryParse(Id, out int employeeId);
+
+            if(employeeId !=0)
+            {
+                PageHeaderText = "Edit Employee";
             Employee = await EmployeeService.GetEmployee(int.Parse(Id));
+
+            }
+            else
+            {
+                PageHeaderText = "Create Employee";
+                Employee = new Employee {
+                    DepartmentID = 1,
+                    DateOfBirth = DateTime.Now,
+                PhotoPath="images/img.jpg"
+                };
+            }
+
             Departments = (await DepartmentService.GetDepartments()).ToList();
             DepartmentId = Employee.DepartmentID.ToString();
             Mapper.Map(Employee, EditEmployeeModel);
@@ -55,11 +74,28 @@ namespace EmployeeManagement.Web.Pages
         protected async Task HandleValidSubmit()
         {
             Mapper.Map(EditEmployeeModel, Employee);
-           var result= await EmployeeService.UpdateEmployee(Employee);
+
+            Employee result = null;
+            if(Employee.EmployeeID!=0)
+            {
+            result = await EmployeeService.UpdateEmployee(Employee);
+            }
+            else
+            {
+            result = await EmployeeService.CreateEmployee(Employee);
+            }
+
             if(result!=null)
             {
                 NavigationManager.NavigateTo("/");
             }
         }
+
+        protected async Task Delete_Click()
+        {
+           await EmployeeService.DeleteEmployee(Employee.EmployeeID);
+           NavigationManager.NavigateTo("/");
+        }
+
     }
 }
